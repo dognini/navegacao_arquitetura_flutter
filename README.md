@@ -1,16 +1,52 @@
-# fokus
+# Navegação e Arquitetura Flutter
 
-A new Flutter project.
+Projeto desenvolvido para estudo e prática de **Arquitetura MVVM** e **Navegação** no Flutter.
 
-## Getting Started
+## 📚 Sobre o Projeto
 
-This project is a starting point for a Flutter application.
+Este projeto foi criado com o objetivo de explorar e implementar conceitos fundamentais de arquitetura de software e navegação em aplicações Flutter:
 
-A few resources to get you started if this is your first Flutter project:
+- **MVVM (Model-View-ViewModel)**: Padrão arquitetural que separa a lógica de negócios da interface do usuário
+- **Navegação**: Implementação de rotas e fluxos de navegação no Flutter
+- **Gerenciamento de Estado**: Práticas de gerenciamento de estado seguindo o padrão MVVM
+- **Organização de Código**: Estrutura de pastas e separação de responsabilidades
 
-- [Lab: Write your first Flutter app](https://docs.flutter.dev/get-started/codelab)
-- [Cookbook: Useful Flutter samples](https://docs.flutter.dev/cookbook)
+## 🏗️ Estrutura do Projeto
 
-For help getting started with Flutter development, view the
-[online documentation](https://docs.flutter.dev/), which offers tutorials,
-samples, guidance on mobile development, and a full API reference.
+```
+lib/
+├── app/
+│   ├── model/          # Modelos de dados
+│   ├── view/           # Interfaces (telas)
+│   ├── view_model/     # Lógica de apresentação
+│   └── shared/         # Componentes compartilhados
+└── main.dart           # Ponto de entrada da aplicação
+```
+
+## 🚀 Tecnologias
+
+- Flutter
+- Dart
+- Arquitetura MVVM
+
+## 📖 Conceitos Aplicados
+
+### MVVM (Model-View-ViewModel)
+
+- **Model**: Representa os dados e a lógica de negócios
+- **View**: Camada de apresentação (widgets)
+- **ViewModel**: Intermediário entre Model e View, gerencia o estado
+
+### Navegação
+
+- Rotas nomeadas
+- Navegação entre telas
+- Passagem de parâmetros
+- Gerenciamento de pilha de navegação
+
+## 🎯 Objetivos de Aprendizado
+
+- Compreender e implementar o padrão MVVM
+- Dominar técnicas de navegação no Flutter
+- Aplicar boas práticas de organização de código
+- Separar responsabilidades entre camadas da aplicação
