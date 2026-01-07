@@ -14,6 +14,8 @@ class TimerWidget extends StatefulWidget {
 class _TimerWidgetState extends State<TimerWidget> {
   final timerViewModel = TimerViewModel();
 
+  final isPauseNotifier = ValueNotifier<bool>(false);
+
   @override
   void initState() {
     super.initState();
@@ -54,7 +56,7 @@ class _TimerWidgetState extends State<TimerWidget> {
               );
             },
           ),
-          const SizedBox(height: 40),
+          SizedBox(height: 40),
           SizedBox(
             width: double.infinity,
             height: 56,
@@ -63,10 +65,14 @@ class _TimerWidgetState extends State<TimerWidget> {
               builder: (context, child) {
                 return ElevatedButton(
                   onPressed: () {
+                    isPauseNotifier.value = false;
                     if (timerViewModel.isPlayning) {
                       timerViewModel.stopTimer();
                     } else {
-                      timerViewModel.startTimer(widget.initialMinutes);
+                      timerViewModel.startTimer(
+                        widget.initialMinutes,
+                        isPauseNotifier,
+                      );
                     }
                   },
                   style: ElevatedButton.styleFrom(
@@ -102,6 +108,46 @@ class _TimerWidgetState extends State<TimerWidget> {
                 );
               },
             ),
+          ),
+          SizedBox(height: 20),
+          ValueListenableBuilder(
+            valueListenable: isPauseNotifier,
+            builder: (context, value, child) {
+              return ListenableBuilder(
+                listenable: timerViewModel,
+                builder: (context, child) {
+                  if (!timerViewModel.isPlayning) {
+                    return SizedBox.shrink();
+                  }
+                  return SizedBox(
+                    height: 56,
+                    child: ElevatedButton(
+                      onPressed: () {
+                        isPauseNotifier.value = !value;
+                      },
+                      child: Row(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: [
+                          Icon(
+                            value ? Icons.play_circle : Icons.pause,
+                            color: Colors.green,
+                          ),
+                          SizedBox(width: 10),
+                          Text(
+                            value ? 'Retomar' : 'Pausar',
+                            style: TextStyle(
+                              fontSize: 16,
+                              fontWeight: FontWeight.bold,
+                              color: AppConfig.backgroundColor,
+                            ),
+                          ),
+                        ],
+                      ),
+                    ),
+                  );
+                },
+              );
+            },
           ),
         ],
       ),
