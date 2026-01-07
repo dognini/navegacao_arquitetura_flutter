@@ -1,7 +1,6 @@
-import 'dart:async';
-
 import 'package:flutter/material.dart';
 import 'package:fokus/app/shared/utils/app_config.dart';
+import 'package:fokus/app/view_model/timer_view_model.dart';
 
 class TimerWidget extends StatefulWidget {
   final int initialMinutes;
@@ -13,26 +12,7 @@ class TimerWidget extends StatefulWidget {
 }
 
 class _TimerWidgetState extends State<TimerWidget> {
-  bool isPlayning = false;
-  Timer? timer;
-  Duration duration = Duration.zero;
-
-  void startTimer() {
-    setState(() {
-      duration = Duration.zero;
-    });
-
-    timer = Timer.periodic(Duration(seconds: 1), (timer) {
-      setState(() {
-        if (duration.inMinutes < widget.initialMinutes) {
-          duration += Duration(seconds: 1);
-        } else {
-          isPlayning = false;
-          timer.cancel();
-        }
-      });
-    });
-  }
+  final timerViewModel = TimerViewModel();
 
   @override
   void initState() {
@@ -42,7 +22,7 @@ class _TimerWidgetState extends State<TimerWidget> {
   @override
   void dispose() {
     super.dispose();
-    timer?.cancel();
+    timerViewModel.stopTimer();
   }
 
   @override
@@ -59,63 +39,68 @@ class _TimerWidgetState extends State<TimerWidget> {
       child: Column(
         mainAxisAlignment: MainAxisAlignment.center,
         children: [
-          // Timer
-          Text(
-            "${duration.inMinutes.toString().padLeft(2, '0')}:${(duration.inSeconds % 60).toString().padLeft(2, '0')}",
-            style: TextStyle(
-              fontSize: 72,
-              fontWeight: FontWeight.bold,
-              color: Colors.white,
-              fontFamily: 'monospace',
-            ),
+          AnimatedBuilder(
+            animation: timerViewModel,
+            builder: (context, child) {
+              final duration = timerViewModel.duration;
+              return Text(
+                "${duration.inMinutes.toString().padLeft(2, '0')}:${(duration.inSeconds % 60).toString().padLeft(2, '0')}",
+                style: TextStyle(
+                  fontSize: 72,
+                  fontWeight: FontWeight.bold,
+                  color: Colors.white,
+                  fontFamily: 'monospace',
+                ),
+              );
+            },
           ),
           const SizedBox(height: 40),
-          // Botões de controle
           SizedBox(
             width: double.infinity,
             height: 56,
-            child: ElevatedButton(
-              onPressed: () {
-                setState(() {
-                  isPlayning = !isPlayning;
-                });
-                if (isPlayning) {
-                  startTimer();
-                } else {
-                  timer?.cancel();
-                }
-              },
-              style: ElevatedButton.styleFrom(
-                backgroundColor: isPlayning
-                    ? Colors.red
-                    : AppConfig.buttonColor,
-                foregroundColor: Colors.white,
-                padding: const EdgeInsets.symmetric(
-                  horizontal: 30,
-                  vertical: 15,
-                ),
-                shape: RoundedRectangleBorder(
-                  borderRadius: BorderRadius.circular(25),
-                ),
-              ),
-              child: Row(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: [
-                  Icon(
-                    isPlayning ? Icons.stop : Icons.play_arrow,
-                    color: AppConfig.backgroundColor,
-                  ),
-                  const SizedBox(width: 10),
-                  Text(
-                    isPlayning ? "Parar" : "Iniciar",
-                    style: const TextStyle(
-                      fontSize: 16,
-                      fontWeight: FontWeight.bold,
-                      color: AppConfig.backgroundColor,
+            child: ListenableBuilder(
+              listenable: timerViewModel,
+              builder: (context, child) {
+                return ElevatedButton(
+                  onPressed: () {
+                    if (timerViewModel.isPlayning) {
+                      timerViewModel.stopTimer();
+                    } else {
+                      timerViewModel.startTimer(widget.initialMinutes);
+                    }
+                  },
+                  style: ElevatedButton.styleFrom(
+                    backgroundColor: timerViewModel.isPlayning
+                        ? Colors.red
+                        : AppConfig.buttonColor,
+                    foregroundColor: Colors.white,
+                    padding: EdgeInsets.symmetric(horizontal: 30, vertical: 15),
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(25),
                     ),
                   ),
-                ],
-              ),
+                  child: Row(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      Icon(
+                        timerViewModel.isPlayning
+                            ? Icons.stop
+                            : Icons.play_arrow,
+                        color: AppConfig.backgroundColor,
+                      ),
+                      SizedBox(width: 10),
+                      Text(
+                        timerViewModel.isPlayning ? "Parar" : "Iniciar",
+                        style: TextStyle(
+                          fontSize: 16,
+                          fontWeight: FontWeight.bold,
+                          color: AppConfig.backgroundColor,
+                        ),
+                      ),
+                    ],
+                  ),
+                );
+              },
             ),
           ),
         ],
