@@ -1,7 +1,7 @@
-import 'package:flutter/material.dart';
-import 'package:fokus/app/utils/app_config.dart';
 import '../enums/timer_type.dart';
 import '../widgets/timer_widget.dart';
+import 'package:flutter/material.dart';
+import 'package:fokus/app/utils/app_config.dart';
 
 class TimerPage extends StatelessWidget {
   final TimerType timerType;

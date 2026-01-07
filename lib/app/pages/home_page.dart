@@ -1,5 +1,7 @@
-import 'package:flutter/material.dart';
 import '../utils/app_config.dart';
+import 'package:flutter/material.dart';
+import 'package:fokus/app/enums/timer_type.dart';
+import 'package:fokus/app/pages/timer_page.dart';
 
 class HomePage extends StatelessWidget {
   const HomePage({super.key});
@@ -25,7 +27,11 @@ class HomePage extends StatelessWidget {
                     height: 56,
                     child: ElevatedButton(
                       onPressed: () {
-                        // TODO: Implementar modo foco
+                        Navigator.pushNamed(
+                          context,
+                          '/timer',
+                          arguments: TimerType.focus,
+                        );
                       },
                       style: ElevatedButton.styleFrom(
                         backgroundColor: AppConfig.buttonColor,
@@ -49,8 +55,19 @@ class HomePage extends StatelessWidget {
                     width: double.infinity,
                     height: 56,
                     child: ElevatedButton(
-                      onPressed: () {
-                        // TODO: Implementar pausa curta
+                      onPressed: () async {
+                        final result = await Navigator.pushNamed(
+                          context,
+                          '/timer',
+                          arguments: TimerType.shortBreak,
+                        );
+                        if (result != null) {
+                          showDialog(
+                            context: context,
+                            builder: (context) =>
+                                AlertDialog(title: Text(result.toString())),
+                          );
+                        }
                       },
                       style: ElevatedButton.styleFrom(
                         backgroundColor: AppConfig.buttonColor,
@@ -75,7 +92,11 @@ class HomePage extends StatelessWidget {
                     height: 56,
                     child: ElevatedButton(
                       onPressed: () {
-                        // TODO: Implementar pausa longa
+                        Navigator.pushNamed(
+                          context,
+                          '/timer',
+                          arguments: TimerType.longBreak,
+                        );
                       },
                       style: ElevatedButton.styleFrom(
                         backgroundColor: AppConfig.buttonColor,
